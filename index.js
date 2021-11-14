@@ -24,19 +24,18 @@ app.get('/',(req,res)=>{
     res.send('Welcome to my back server');
 })
 
-app.get('/api/get',(req,res)=>{
+app.get('/api/get',cors(),(req,res)=>{
     const sqlInsert = `SELECT * FROM movie_reviews`;
     db.query(sqlInsert,(result,err)=>{
-        debugger;
         res.send(result)
     }).then((result)=>{
-        console.log(result)
+        res.send(result)
     }).catch((err)=>{
-        console.log(err)
+        res.send(err)
     });
 })
 
-app.post('/api/insert',(req,res)=>{
+app.post('/api/insert',cors(),(req,res)=>{
     const movieName = req.body.movieName;
     const movieReview = req.body.movieReview;
 
@@ -44,12 +43,35 @@ app.post('/api/insert',(req,res)=>{
     db.query(sqlInsert,[movieName, movieReview], (err,result)=>{
         res.send(result);
     }).then(()=>{
-        console.log('ok');
+        res.send('OK')
     }).catch((err)=>{
-        console.log(err);
+        res.send(err)
     });
 })
 
+app.put('/api/update',cors(),(req,res)=>{
+    const name = req.body.movieName;
+    const review = req.body.movieReview;
+    const sqlUpdate = `UPDATE movie_reviews SET movieReview =? WHERE movieName =?`
+
+    db.query(sqlUpdate, [review,name],(err,result)=>{
+        if (err) console.log(err);
+    })
+})
+
+app.delete("/api/delete/:movieName",cors(),(req,res)=>{
+    const name = req.params.movieName;
+    const sqlDelete = `DELETE FROM movie_reviews WHERE movieName=?`
+
+    db.query(sqlDelete,name,(err,result)=>{
+        if(err) console.log(err);
+    }).then(()=>{
+        console.log('Delete Movie Review Succeed')
+    }).catch((err)=>{
+        console.log('Delete Err :',err);
+    })
+
+})
 
 app.listen(3001,()=>{
     console.log('running on port 3001');
