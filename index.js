@@ -56,6 +56,11 @@ app.put('/api/update',cors(),(req,res)=>{
 
     db.query(sqlUpdate, [review,name],(err,result)=>{
         if (err) console.log(err);
+    }).then((result)=>{
+        debugger;
+        res.send(result);
+    }).catch((err)=>{
+        res.send(err);
     })
 })
 
@@ -65,10 +70,10 @@ app.delete("/api/delete/:movieName",cors(),(req,res)=>{
 
     db.query(sqlDelete,name,(err,result)=>{
         if(err) console.log(err);
-    }).then(()=>{
-        console.log('Delete Movie Review Succeed')
+    }).then((result)=>{
+        res.send(result);
     }).catch((err)=>{
-        console.log('Delete Err :',err);
+        res.send(err);
     })
 
 })
